@@ -1,0 +1,106 @@
+import { useState, useCallback, useRef, useEffect } from "react";
+import { 
+  createSpeechRecognition, 
+  speakText, 
+  stopSpeaking,
+  isSpeechRecognitionSupported,
+  isSpeechSynthesisSupported,
+  type SpeechRecognitionInstance
+} from "@/lib/speech";
+
+export const useSpeechRecognition = () => {
+  const [isListening, setIsListening] = useState(false);
+  const [transcript, setTranscript] = useState("");
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
+
+  const startListening = useCallback(() => {
+    if (!isSpeechRecognitionSupported()) {
+      console.warn("Speech recognition not supported");
+      return;
+    }
+
+    const recognition = createSpeechRecognition();
+    if (!recognition) return;
+
+    recognitionRef.current = recognition;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+    };
+
+    recognition.onresult = (event) => {
+      const result = event.results[0][0].transcript;
+      setTranscript(result);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      setIsListening(false);
+    };
+
+    recognition.start();
+  }, []);
+
+  const stopListening = useCallback(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    }
+  }, []);
+
+  const clearTranscript = useCallback(() => {
+    setTranscript("");
+  }, []);
+
+  return {
+    isListening,
+    transcript,
+    startListening,
+    stopListening,
+    clearTranscript,
+    isSupported: isSpeechRecognitionSupported(),
+  };
+};
+
+export const useSpeechSynthesis = () => {
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  const speak = useCallback(async (text: string) => {
+    if (!isSpeechSynthesisSupported()) {
+      console.warn("Speech synthesis not supported");
+      return;
+    }
+
+    setIsSpeaking(true);
+    try {
+      await speakText(text);
+    } catch (error) {
+      console.error("Speech synthesis error:", error);
+    } finally {
+      setIsSpeaking(false);
+    }
+  }, []);
+
+  const stop = useCallback(() => {
+    stopSpeaking();
+    setIsSpeaking(false);
+  }, []);
+
+  // Load voices on mount
+  useEffect(() => {
+    if (isSpeechSynthesisSupported()) {
+      window.speechSynthesis.getVoices();
+    }
+  }, []);
+
+  return {
+    isSpeaking,
+    speak,
+    stop,
+    isSupported: isSpeechSynthesisSupported(),
+  };
+};
