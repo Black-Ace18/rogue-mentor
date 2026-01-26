@@ -68,11 +68,12 @@ export const getGeminiResponse = async (
   }
 
   try {
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
-      systemInstruction: ROGUE_MENTOR_SYSTEM_INSTRUCTION,
-    });
+   const model = genAI.getGenerativeModel({ 
+  model: "gemini-1.5-flash" 
+}, { apiVersion: 'v1beta' }); // Add this second part!
 
+// Then set system instructions separately if the above doesn't take them
+model.systemInstruction = ROGUE_MENTOR_SYSTEM_INSTRUCTION;
     const history = messages.slice(0, -1).map(msg => ({
       role: msg.role,
       parts: [{ text: msg.content }],
