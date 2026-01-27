@@ -66,8 +66,11 @@ export const requestMicrophonePermission = async (): Promise<boolean> => {
   }
 };
 
-// Create speech recognition instance
-export const createSpeechRecognition = (): SpeechRecognitionInstance | null => {
+// Create speech recognition instance with Opera GX / desktop compatibility
+export const createSpeechRecognition = (options?: { 
+  continuous?: boolean; 
+  interimResults?: boolean;
+}): SpeechRecognitionInstance | null => {
   if (!isSpeechRecognitionSupported()) return null;
   
   const win = window as WindowWithSpeech;
@@ -77,9 +80,13 @@ export const createSpeechRecognition = (): SpeechRecognitionInstance | null => {
   
   const recognition = new SpeechRecognitionClass();
   
-  recognition.continuous = false;
-  recognition.interimResults = false;
+  // CRITICAL: Enable continuous mode for Opera GX - prevents immediate close
+  recognition.continuous = options?.continuous ?? true;
+  // CRITICAL: Enable interim results to keep the connection alive
+  recognition.interimResults = options?.interimResults ?? true;
   recognition.lang = 'en-US';
+  
+  console.log('🎤 Recognition configured: continuous=' + recognition.continuous + ', interimResults=' + recognition.interimResults);
   
   return recognition;
 };

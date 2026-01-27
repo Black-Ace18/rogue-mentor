@@ -37,22 +37,50 @@ export const useSpeechRecognition = () => {
         return;
       }
       setPermissionGranted(true);
+      // CRITICAL: Small delay after permission grant for Opera GX
+      await new Promise(resolve => setTimeout(resolve, 100));
     }
 
-    const recognition = createSpeechRecognition();
-    if (!recognition) return;
+    // Stop any existing recognition first
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.abort();
+      } catch (e) {
+        // Ignore abort errors
+      }
+    }
+
+    const recognition = createSpeechRecognition({ continuous: true, interimResults: true });
+    if (!recognition) {
+      console.error('❌ Failed to create recognition instance');
+      return;
+    }
 
     recognitionRef.current = recognition;
 
     recognition.onstart = () => {
-      console.log('🎤 Listening started');
+      console.log('🎤 Listening started successfully');
       setIsListening(true);
     };
 
     recognition.onresult = (event) => {
-      const result = event.results[0][0].transcript;
-      console.log('🎤 Transcript received:', result);
-      setTranscript(result);
+      // Get the latest result
+      const resultIndex = event.resultIndex;
+      const result = event.results[resultIndex];
+      const transcriptText = result[0].transcript;
+      
+      console.log('🎤 Transcript received:', transcriptText, '| Final:', result.isFinal);
+      
+      // Only set transcript when we have a final result
+      if (result.isFinal) {
+        setTranscript(transcriptText);
+        // Stop listening after getting final result
+        try {
+          recognition.stop();
+        } catch (e) {
+          // Ignore stop errors
+        }
+      }
     };
 
     recognition.onend = () => {
@@ -61,11 +89,29 @@ export const useSpeechRecognition = () => {
     };
 
     recognition.onerror = (event) => {
-      console.error("Speech recognition error:", event.error);
+      const errorType = event.error;
+      console.error("🎤 Speech recognition error:", errorType);
+      
+      // Handle specific errors gracefully
+      if (errorType === 'no-speech') {
+        console.log('🎤 No speech detected, you can try again');
+      } else if (errorType === 'aborted') {
+        console.log('🎤 Recognition was aborted');
+      } else if (errorType === 'not-allowed') {
+        console.error('❌ Microphone access denied by user');
+        setPermissionGranted(false);
+      }
+      
       setIsListening(false);
     };
 
-    recognition.start();
+    try {
+      console.log('🎤 Starting recognition...');
+      recognition.start();
+    } catch (err) {
+      console.error('❌ Failed to start recognition:', err);
+      setIsListening(false);
+    }
   }, [permissionGranted]);
 
   const stopListening = useCallback(() => {
