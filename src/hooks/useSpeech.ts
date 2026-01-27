@@ -5,18 +5,38 @@ import {
   stopSpeaking,
   isSpeechRecognitionSupported,
   isSpeechSynthesisSupported,
+  requestMicrophonePermission,
   type SpeechRecognitionInstance
 } from "@/lib/speech";
 
 export const useSpeechRecognition = () => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
+  const [permissionGranted, setPermissionGranted] = useState(false);
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
 
-  const startListening = useCallback(() => {
+  // Check for support on mount
+  useEffect(() => {
+    if (isSpeechRecognitionSupported()) {
+      console.log('🎤 Speech recognition available on this device');
+    }
+  }, []);
+
+  const startListening = useCallback(async () => {
     if (!isSpeechRecognitionSupported()) {
       console.warn("Speech recognition not supported");
       return;
+    }
+
+    // CRITICAL: Request microphone permission FIRST (fixes Opera GX)
+    if (!permissionGranted) {
+      console.log('🎤 First time - requesting explicit mic permission...');
+      const granted = await requestMicrophonePermission();
+      if (!granted) {
+        console.error('❌ Cannot start listening - mic permission denied');
+        return;
+      }
+      setPermissionGranted(true);
     }
 
     const recognition = createSpeechRecognition();
@@ -25,15 +45,18 @@ export const useSpeechRecognition = () => {
     recognitionRef.current = recognition;
 
     recognition.onstart = () => {
+      console.log('🎤 Listening started');
       setIsListening(true);
     };
 
     recognition.onresult = (event) => {
       const result = event.results[0][0].transcript;
+      console.log('🎤 Transcript received:', result);
       setTranscript(result);
     };
 
     recognition.onend = () => {
+      console.log('🎤 Listening ended');
       setIsListening(false);
     };
 
@@ -43,7 +66,7 @@ export const useSpeechRecognition = () => {
     };
 
     recognition.start();
-  }, []);
+  }, [permissionGranted]);
 
   const stopListening = useCallback(() => {
     if (recognitionRef.current) {
