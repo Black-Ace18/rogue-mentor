@@ -22,7 +22,7 @@ const IdentityPanel = ({ onClose }: IdentityPanelProps) => {
               IDENTITY PROTOCOLS
             </h2>
             <p className="text-xs text-muted-foreground font-mono uppercase tracking-widest">
-              Developed by Umer Khan
+              © 2026 Umer Khan | Digital Sovereignty Act
             </p>
           </div>
           <button
@@ -43,7 +43,7 @@ const IdentityPanel = ({ onClose }: IdentityPanelProps) => {
               <h3 className="font-display font-bold uppercase text-sm tracking-tight">Intelligence Briefing</h3>
             </div>
             <p className="text-sm font-mono text-muted-foreground leading-relaxed">
-              Rogue Mentor is an advanced career intelligence engine architected by Umer Khan. It utilizes a proprietary, highly-conditioned API framework designed to dismantle standard corporate indoctrination and equip professionals with asymmetric tactical leverage.
+              Rogue Mentor is an advanced career intelligence engine developed by Umer Khan. It utilizes a proprietary API framework designed to dismantle standard corporate indoctrination and equip professionals with asymmetric tactical leverage.
             </p>
           </section>
 
