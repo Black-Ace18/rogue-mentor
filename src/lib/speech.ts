@@ -41,7 +41,9 @@ export interface SpeechRecognitionResult {
 // Check if speech recognition is available
 export const isSpeechRecognitionSupported = (): boolean => {
   const win = window as WindowWithSpeech;
-  return 'webkitSpeechRecognition' in win || 'SpeechRecognition' in win;
+  const supported = 'webkitSpeechRecognition' in win || 'SpeechRecognition' in win;
+  console.log('🎤 System Check: ' + (win.webkitSpeechRecognition ? 'Webkit detected' : win.SpeechRecognition ? 'Standard detected' : 'None detected'));
+  return supported;
 };
 
 // Check if speech synthesis is available
@@ -49,11 +51,27 @@ export const isSpeechSynthesisSupported = (): boolean => {
   return 'speechSynthesis' in window;
 };
 
+// Request microphone permission explicitly (fixes Opera GX and other browsers)
+export const requestMicrophonePermission = async (): Promise<boolean> => {
+  try {
+    console.log('🎤 Requesting microphone permission...');
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    // Stop all tracks after getting permission
+    stream.getTracks().forEach(track => track.stop());
+    console.log('✅ Microphone permission granted');
+    return true;
+  } catch (error) {
+    console.error('❌ Microphone permission denied:', error);
+    return false;
+  }
+};
+
 // Create speech recognition instance
 export const createSpeechRecognition = (): SpeechRecognitionInstance | null => {
   if (!isSpeechRecognitionSupported()) return null;
   
   const win = window as WindowWithSpeech;
+  // Universal polyfill: try standard first, then webkit
   const SpeechRecognitionClass = win.SpeechRecognition || win.webkitSpeechRecognition;
   if (!SpeechRecognitionClass) return null;
   
@@ -81,7 +99,8 @@ export const speakText = (
       return;
     }
 
-    // Cancel any ongoing speech
+    // CRITICAL: Cancel any ongoing speech to prevent audio stacking
+    console.log('🔊 Cancelling any existing speech before new utterance');
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(text);
@@ -109,6 +128,11 @@ export const speakText = (
     
     window.speechSynthesis.speak(utterance);
   });
+};
+
+// Check if currently speaking
+export const isSpeaking = (): boolean => {
+  return isSpeechSynthesisSupported() && window.speechSynthesis.speaking;
 };
 
 // Stop any ongoing speech

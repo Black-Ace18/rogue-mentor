@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { X, Mic, MicOff, Volume2, VolumeX, Phone } from "lucide-react";
 import { useSpeechRecognition, useSpeechSynthesis } from "@/hooks/useSpeech";
+import { stopSpeaking, isSpeaking as checkIsSpeaking } from "@/lib/speech";
 
 interface CallModeProps {
   onClose: () => void;
@@ -24,9 +25,13 @@ const CallMode = ({ onClose, onSendMessage, lastResponse, isProcessing }: CallMo
     }
   }, [transcript, isListening, onSendMessage, clearTranscript]);
 
-  // Handle new response
+  // Handle new response - CRITICAL: Cancel existing speech first
   useEffect(() => {
     if (lastResponse && autoSpeak && !isProcessing && status === "processing") {
+      // Cancel any existing speech to prevent audio stacking
+      console.log('🔊 New response - cancelling any existing speech');
+      stopSpeaking();
+      
       setStatus("speaking");
       speak(lastResponse).then(() => {
         setStatus("idle");
@@ -43,18 +48,39 @@ const CallMode = ({ onClose, onSendMessage, lastResponse, isProcessing }: CallMo
     }
   }, [isSpeaking]);
 
-  const handleMicToggle = useCallback(() => {
+  const handleMicToggle = useCallback(async () => {
     if (isListening) {
       stopListening();
     } else {
-      if (isSpeaking) stop();
+      // Stop any speaking before starting to listen
+      if (isSpeaking || checkIsSpeaking()) {
+        console.log('🔊 Stopping speech before mic activation');
+        stop();
+        stopSpeaking();
+      }
       setStatus("listening");
-      startListening();
+      await startListening();
     }
   }, [isListening, isSpeaking, stop, startListening, stopListening]);
 
+  // FIXED: Top-left audio toggle - properly syncs with speech state
+  const handleAutoSpeakToggle = useCallback(() => {
+    // If currently speaking and we're disabling auto-speak, stop immediately
+    if (autoSpeak && (isSpeaking || checkIsSpeaking())) {
+      console.log('🔊 Auto-speak disabled - killing all audio');
+      stop();
+      stopSpeaking();
+      window.speechSynthesis.cancel(); // Direct call for immediate effect
+      setStatus("idle");
+    }
+    setAutoSpeak(!autoSpeak);
+  }, [autoSpeak, isSpeaking, stop]);
+
   const handleStopSpeaking = () => {
+    console.log('🔊 Manual stop requested');
     stop();
+    stopSpeaking();
+    window.speechSynthesis.cancel(); // Direct call for immediate effect
     setStatus("idle");
   };
 
@@ -95,13 +121,13 @@ const CallMode = ({ onClose, onSendMessage, lastResponse, isProcessing }: CallMo
         <X className="w-6 h-6" />
       </button>
 
-      {/* Auto-speak toggle */}
+      {/* Auto-speak toggle - FIXED: Now properly stops all audio */}
       <button
-        onClick={() => setAutoSpeak(!autoSpeak)}
+        onClick={handleAutoSpeakToggle}
         className={`absolute top-6 left-6 p-3 rounded-full transition-colors ${
           autoSpeak ? "bg-primary/20 text-primary" : "bg-muted/30 text-muted-foreground"
         }`}
-        aria-label={autoSpeak ? "Disable auto-speak" : "Enable auto-speak"}
+        aria-label={autoSpeak ? "Disable auto-speak (stops current audio)" : "Enable auto-speak"}
       >
         {autoSpeak ? <Volume2 className="w-6 h-6" /> : <VolumeX className="w-6 h-6" />}
       </button>
