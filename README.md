@@ -1,73 +1,49 @@
-# Welcome to your Lovable project
+Rogue Mentor
+Project Overview
+Rogue Mentor is an AI-driven career intelligence application designed to provide strategic career guidance. It utilizes large language models to offer unconventional perspectives on professional development, networking, and industry positioning.
 
-## Project info
+Live Access and Distribution
+Web Application: https://roguementor.vercel.app
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Android Executable (APK): Available via the GitHub Releases section.
 
-## How can I edit this code?
+Core Features
+Intelligence Interface: A modular navigation system categorized into Archive, Intel, and Identity protocols.
 
-There are several ways of editing your application.
+Voice Integration: Supports real-time speech-to-text input and native audio playback for hands-free interaction.
 
-**Use Lovable**
+Client-Side Persistence: Utilizes browser storage to maintain session history and mission logs without external database dependencies.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Responsive Architecture: Built with a mobile-first approach to ensure full functionality across various device form factors.
 
-Changes made via Lovable will be committed automatically to this repo.
+Technical Specifications
+Frontend Framework: React with Vite for optimized build performance.
 
-**Use your preferred IDE**
+Styling: Tailwind CSS and shadcn/ui for a consistent, modular component library.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Language: TypeScript for static type checking and code maintainability.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+AI Integration: Leverages Google’s Generative AI SDK for natural language processing.
 
-Follow these steps:
+Installation and Local Setup
+To run this project locally, ensure you have Node.js installed on your system.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Bash
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Clone the repository
+git clone https://github.com/Black-Ace18/Chess-App.git
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Enter the directory
+cd Chess-App
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Install dependencies
+npm install
+
+# Environment Configuration
+# Create a .env.local file in the root and add:
+# VITE_GEMINI_API_KEY=your_api_key
+
+# Launch development server
 npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Security and Data Handling
+The application is designed with a privacy-first approach. All interaction logs are stored locally in the user's browser. API calls are handled via secure endpoints, and no personal data is collected or stored on external servers.
