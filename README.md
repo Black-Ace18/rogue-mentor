@@ -1,42 +1,42 @@
 # Rogue Mentor | Elite Career Intelligence
 
-## Project Overview
-Rogue Mentor is an AIvdriven career intelligence application designed to provide strategic career guidance. It utilizes large language models to offer unconventional perspectives on professional development, networking, and industry positioning.
+## Overview
+Rogue Mentor is an AI-driven career intelligence application built to deliver
+strategic, unconventional guidance for professionals navigating modern careers.
+It leverages large language models to provide insight beyond traditional career advice,
+focusing on positioning, leverage, and long-term impact.
 
-## Live Access and Distribution
+## Live Access
 - **Web Application:** https://roguementor.vercel.app  
-- **Android Executable (APK):** Available via the GitHub Releases section.
+- **Android (APK):** Available via GitHub Releases
 
-## Core Features
-- **Intelligence Interface:** A modular navigation system categorized into Archive, Intel, and Identity protocols.
-- **Voice Integration:** Supports real-time speech-to-text input and native audio playback for hands-free interaction.
-- **Client-Side Persistence:** Utilizes browser storage to maintain session history and mission logs without external database dependencies.
-- **Responsive Architecture:** Built with a mobile-first approach to ensure full functionality across various device form factors.
+## Key Features
+- **Intelligence Interface:** Modular system organized into Archive, Intel, and Identity protocols.
+- **Voice Interaction:** Real-time speech-to-text input with native audio playback.
+- **Local Persistence:** Session history stored securely in the user’s browser.
+- **Responsive Design:** Mobile-first architecture ensuring full cross-device compatibility.
 
-## Technical Specifications
-- **Frontend Framework:** React with Vite for optimized build performance.
-- **Styling:** Tailwind CSS and shadcn/ui for a consistent, modular component library.
-- **Language:** TypeScript for static type checking and code maintainability.
-- **AI Integration:** Leverages Google’s Generative AI SDK for natural language processing.
+## Technology Stack
+- **Frontend:** React + Vite
+- **Styling:** Tailwind CSS, shadcn/ui
+- **Language:** TypeScript
 
-## Installation and Local Setup
-To run this project locally, ensure you have Node.js installed on your system.
-
-### Bash
+## Installation & Local Setup
+Ensure Node.js is installed on your system.
 
 ```bash
 # Clone the repository
-git clone https://github.com/Black-Ace18/Chess-App.git
+git clone https://github.com/Black-Ace18/rogue-mentor.git
 
-# Enter the directory
-cd Chess-App
+# Enter the project directory
+cd rogue-mentor
 
 # Install dependencies
 npm install
 
-# Environment Configuration
-# Create a .env.local file in the root and add:
+# Environment configuration
+# Create a .env.local file and add:
 # VITE_GEMINI_API_KEY=your_api_key
 
-# Launch development server
+# Start development server
 npm run dev
