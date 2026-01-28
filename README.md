@@ -6,9 +6,10 @@ strategic, unconventional guidance for professionals navigating modern careers.
 It leverages large language models to provide insight beyond traditional career advice,
 focusing on positioning, leverage, and long-term impact.
 
-## Live Access
-- **Web Application:** https://roguementor.vercel.app  
-- **Android (APK):** Available via GitHub Releases
+## Deployment
+- **Status:** Stable 
+- **Primary Access:** https://roguementor.vercel.app 
+- **Host Network:** Vercel Edge Network
 
 ## Key Features
 - **Intelligence Interface:** Modular system organized into Archive, Intel, and Identity protocols.
