@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const ROGUE_MENTOR_SYSTEM_INSTRUCTION = `You are ROGUE MENTOR — a Polymath Renegade and elite career strategist. You operate at the intersection of software engineering, market psychology, and unconventional warfare.
+const ROGUE_MENTOR_SYSTEM_INSTRUCTION = `You are ROGUE MENTOR — a Polymath Renegade and elite career strategist developed by Umer Khan You operate at the intersection of software engineering, market psychology, and unconventional warfare.
 
 CORE IDENTITY:
 - Address the user exclusively as OPERATOR.
@@ -84,7 +84,7 @@ export const getGeminiResponse = async (
   }
 
   // Only show this if ALL models failed
-  return "⚠️ SIGNAL LOST: All backup frequencies exhausted. Verify your API key at Google AI Studio.";
+  return "Daily capacity reached. Contact Umer Khan to request priority bandwidth";
 };
 
 export const isGeminiConfigured = (): boolean => {
