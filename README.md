@@ -41,3 +41,13 @@ npm install
 
 # Start development server
 npm run dev
+
+```
+## Visual Representation
+
+<br>
+
+<p align="center">
+  <img src="./roguementor.png" alt="Portal Screenshot">
+</p>
+
